@@ -1,5 +1,6 @@
 package com.example.pricecompareredis.service;
 
+import com.example.pricecompareredis.vo.Product;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
@@ -20,4 +21,8 @@ public class LowestPriceServiceImpl implements LowestPriceService {
         return myTempSet;
     }
 
+    public int setNewProduct(Product newProduct) {
+        redisTemplate.opsForZSet().add(newProduct.getProductGrpId(), newProduct.getProductId(), newProduct.getPrice());
+        return redisTemplate.opsForZSet().rank(newProduct.getProductGrpId(), newProduct.getProductId()).intValue();
+    }
 }
