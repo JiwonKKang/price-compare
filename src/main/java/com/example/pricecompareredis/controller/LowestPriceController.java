@@ -22,5 +22,6 @@ public class LowestPriceController {
     @PutMapping("/product")
     public int setNewProduct(@RequestBody Product newProduct) {
         return lowestPriceService.setNewProduct(newProduct);
+
     }
 }
