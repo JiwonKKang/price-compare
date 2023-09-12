@@ -1,7 +1,9 @@
 package com.example.pricecompareredis.controller;
 
 import com.example.pricecompareredis.service.LowestPriceServiceImpl;
+import com.example.pricecompareredis.vo.Keyword;
 import com.example.pricecompareredis.vo.Product;
+import com.example.pricecompareredis.vo.ProductGrp;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +24,20 @@ public class LowestPriceController {
     @PutMapping("/product")
     public int setNewProduct(@RequestBody Product newProduct) {
         return lowestPriceService.setNewProduct(newProduct);
+    }
+
+    @PutMapping("/productGroup")
+    public int setNewProductGroup(@RequestBody ProductGrp newProductGrp) {
+        return lowestPriceService.setNewProductGroup(newProductGrp);
+    }
+
+    @PutMapping("/productGroupToKeyword")
+    public int setNewProductGrpToKeyword(String keyword, String prodGrpId, double score) {
+        return lowestPriceService.setNewProductGrpToKeyword(keyword, prodGrpId, score);
+    }
+
+    @GetMapping("/productPrice/lowest")
+    public Keyword getLowestPriceProductByKeyword(String keyword) {
 
     }
 }
