@@ -66,5 +66,4 @@ public class LowestPriceServiceImpl implements LowestPriceService {
 
         return Keyword.of(keyword, productGrpList);
     }
-
 }
