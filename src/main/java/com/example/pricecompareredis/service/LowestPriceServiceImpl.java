@@ -1,17 +1,15 @@
 package com.example.pricecompareredis.service;
 
+import com.example.pricecompareredis.exception.NotFoundException;
 import com.example.pricecompareredis.vo.Keyword;
 import com.example.pricecompareredis.vo.Product;
 import com.example.pricecompareredis.vo.ProductGrp;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.connection.RedisZSetCommands;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -20,16 +18,19 @@ public class LowestPriceServiceImpl implements LowestPriceService {
     private final RedisTemplate<String, Object> redisTemplate;
 
 
-    public Set getZsetValue(String key) {
-        Set<ZSetOperations.TypedTuple<Object>> myTempSet = new HashSet<>();
+    public Set<ZSetOperations.TypedTuple<Object>> getZsetValue(String key) {
+        Set<ZSetOperations.TypedTuple<Object>> myTempSet;
         myTempSet = redisTemplate.opsForZSet().rangeWithScores(key, 0, 9);
 
+        if (Objects.requireNonNull(myTempSet).isEmpty()) {
+            throw new NotFoundException("The Key doesn't exist in Redis", HttpStatus.NOT_FOUND);
+        }
         return myTempSet;
     }
 
     public int setNewProduct(Product newProduct) {
         redisTemplate.opsForZSet().add(newProduct.getProductGrpId(), newProduct.getProductId(), newProduct.getPrice());
-        return redisTemplate.opsForZSet().rank(newProduct.getProductGrpId(), newProduct.getProductId()).intValue();
+        return Objects.requireNonNull(redisTemplate.opsForZSet().rank(newProduct.getProductGrpId(), newProduct.getProductId())).intValue();
     }
 
     public int setNewProductGroup(ProductGrp newProductGrp) {

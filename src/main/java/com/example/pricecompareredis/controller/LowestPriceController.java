@@ -5,6 +5,7 @@ import com.example.pricecompareredis.vo.Keyword;
 import com.example.pricecompareredis.vo.Product;
 import com.example.pricecompareredis.vo.ProductGrp;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Set;
@@ -17,8 +18,8 @@ public class LowestPriceController {
     private final LowestPriceServiceImpl lowestPriceService;
 
     @GetMapping("/product")
-    public Set getZsetValue(String key) {
-        return lowestPriceService.getZsetValue(key);
+    public ResponseEntity<Object> getZsetValue(String key) {
+        return ResponseEntity.ok(lowestPriceService.getZsetValue(key));
     }
 
     @PutMapping("/product")
